@@ -2,23 +2,47 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import apiRouter from './routes/api';
+import os from 'os';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+// Явно преобразуем PORT в число
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
-// Middleware
+// Получаем IP сервера
+const getLocalIP = (): string => {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name] || []) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return '0.0.0.0';
+};
+
+const localIP = getLocalIP();
+console.log('🌐 Локальный IP сервера:', localIP);
+
+// Разрешаем запросы с любых источников (для разработки)
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+  origin: '*', // Внимание: в продакшене замените на конкретные домены!
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Логирование запросов (для разработки)
+// Логирование запросов
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url} from ${req.ip}`);
+  if (req.method === 'POST') {
+    console.log('Body:', req.body);
+  }
   next();
 });
 
@@ -30,7 +54,9 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    message: 'Server is running'
+    message: 'Server is running',
+    ip: localIP,
+    port: PORT
   });
 });
 
@@ -48,11 +74,13 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-// Запуск сервера
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`API available at http://localhost:${PORT}/api`);
-  console.log(`Health check at http://localhost:${PORT}/health`);
+// Слушаем на всех интерфейсах
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`📡 Local: http://localhost:${PORT}`);
+  console.log(`🌍 Network: http://${localIP}:${PORT}`);
+  console.log(`🔍 Health check: http://${localIP}:${PORT}/health`);
+  console.log(`📚 API: http://${localIP}:${PORT}/api`);
 });
 
 export default app;

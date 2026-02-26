@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Terraria-стили для скроллбара */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #5D7B5D;
+  border: 2px solid #3E543E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8B5E3C;
+  border: 2px solid #5D3A1A;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9D6B4A;
+}
+
+/* Анимации для Terraria */
+@keyframes dayNightCycle {
+  0% {
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%);
+  }
+  50% {
+    background: linear-gradient(180deg, #191970 0%, #2E1B5F 100%);
+  }
+  100% {
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%);
+  }
+}
+
+@keyframes cloudFloat {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes torchFlicker {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.9);
+  }
+}
+
+/* Пиксельная графика */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

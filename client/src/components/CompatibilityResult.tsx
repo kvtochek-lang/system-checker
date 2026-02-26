@@ -20,9 +20,9 @@ import {
   Error as ErrorIcon,
   Warning as WarningIcon,
   Computer,
-  Memory,
-  Cpu,
-  Vrpano,
+  Memory as MemoryIcon,
+  DeveloperBoard as CpuIcon,
+  VideogameAsset as GpuIcon,
   Build,
   Download
 } from '@mui/icons-material';
@@ -49,11 +49,11 @@ const CompatibilityResult: React.FC<CompatibilityResultProps> = ({ result }) => 
   const getComponentIcon = (component: string) => {
     switch (component.toLowerCase()) {
       case 'gpu':
-        return <Vrpano />;
+        return <GpuIcon />;
       case 'cpu':
-        return <Cpu />;
+        return <CpuIcon />;
       case 'ram':
-        return <Memory />;
+        return <MemoryIcon />;
       case 'os':
         return <Computer />;
       default:
@@ -79,23 +79,30 @@ const CompatibilityResult: React.FC<CompatibilityResultProps> = ({ result }) => 
       case 'compatible':
         return {
           title: 'Система полностью совместима!',
-          color: 'success',
+          color: 'success' as const,
           icon: <CheckCircle sx={{ fontSize: 40 }} />,
           description: 'Ваш компьютер соответствует рекомендуемым требованиям.'
         };
       case 'partial':
         return {
           title: 'Частичная совместимость',
-          color: 'warning',
+          color: 'warning' as const,
           icon: <WarningIcon sx={{ fontSize: 40 }} />,
           description: 'Система соответствует минимальным требованиям, но могут быть ограничения.'
         };
       case 'incompatible':
         return {
           title: 'Система не совместима',
-          color: 'error',
+          color: 'error' as const,
           icon: <ErrorIcon sx={{ fontSize: 40 }} />,
           description: 'Ваш компьютер не соответствует минимальным требованиям.'
+        };
+      default:
+        return {
+          title: 'Результат проверки',
+          color: 'info' as const,
+          icon: <Computer sx={{ fontSize: 40 }} />,
+          description: 'Проверка выполнена'
         };
     }
   };
@@ -106,15 +113,15 @@ const CompatibilityResult: React.FC<CompatibilityResultProps> = ({ result }) => 
     <Card elevation={3}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          {statusInfo?.icon}
+          {statusInfo.icon}
           <Typography variant="h5" sx={{ ml: 2 }}>
             {result.softwareName}
           </Typography>
         </Box>
 
-        <Alert severity={statusInfo?.color as any} sx={{ mb: 3 }}>
-          <AlertTitle>{statusInfo?.title}</AlertTitle>
-          {statusInfo?.description}
+        <Alert severity={statusInfo.color} sx={{ mb: 3 }}>
+          <AlertTitle>{statusInfo.title}</AlertTitle>
+          {statusInfo.description}
         </Alert>
 
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -143,10 +150,10 @@ const CompatibilityResult: React.FC<CompatibilityResultProps> = ({ result }) => 
                   }
                   secondary={
                     <>
-                      <Typography variant="body2" color="text.primary">
+                      <Typography variant="body2" color="text.primary" component="span" display="block">
                         Ваше значение: {check.userValue}
                       </Typography>
-                      <Typography variant="body2" color="text.primary">
+                      <Typography variant="body2" color="text.primary" component="span" display="block">
                         Требуется: {check.requiredValue}
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
