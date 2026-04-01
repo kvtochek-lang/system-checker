@@ -206,13 +206,6 @@ function App() {
                   >
                     Новая проверка
                   </Button>
-                  <Button 
-                    variant="outlined"
-                    startIcon={<span>💾</span>}
-                    sx={{ fontFamily: '"Courier New", monospace' }}
-                  >
-                    Сохранить результат
-                  </Button>
                 </Box>
               </Grid>
             )}
